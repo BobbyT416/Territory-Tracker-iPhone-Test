@@ -42,6 +42,19 @@ textarea{width:100%;height:70px;border:1px solid #ccc;border-radius:10px;padding
   white-space:nowrap;
   text-shadow:0 1px 1px rgba(255,255,255,.7);
 }
+
+@media (max-width:600px){
+  body.editor-open .bottom{display:none!important}
+  body.editor-open #map{
+    bottom:0!important;
+  }
+  body.editor-open #editor{
+    top:auto!important;
+    bottom:0!important;
+    max-height:46dvh!important;
+    z-index:40000!important;
+  }
+}
 </style>
 
 <style id="iphone-layout-v28">
@@ -125,6 +138,15 @@ textarea{width:100%;height:70px;border:1px solid #ccc;border-radius:10px;padding
 <button id="addDNW">➕ Add Do Not Work Area</button>
 <button id="remaining" title="Show only houses not marked Worked">Remaining</button>
 </div>
+
+<div id="dataTransfer" style="margin-top:6px;display:flex;gap:5px;justify-content:center">
+<button id="exportData" type="button">💾 Export Map Data</button>
+<label for="importData" style="display:inline-block">
+  <span style="display:inline-block;background:#e5e5ea;border-radius:10px;padding:10px 8px;font-weight:700;cursor:pointer">📂 Import Map Data</span>
+  <input id="importData" type="file" accept=".json,application/json" style="display:none">
+</label>
+</div>
+
 <div class="legend">
 <span><i class="sw" style="background:#c7c7cc"></i>Unworked</span>
 <span><i class="sw" style="background:#34c759"></i>Worked</span>
@@ -184,6 +206,48 @@ textarea{width:100%;height:70px;border:1px solid #ccc;border-radius:10px;padding
 <script>
 (function(){
 'use strict';
+// Cross-device map-data transfer. Static GitHub Pages cannot directly share
+// localStorage between the PC and iPhone, so this provides a safe JSON export/import.
+function exportMapData(){
+  const payload={
+    version:1,
+    territory:territory,
+    dnw:dnw,
+    dnwNames:dnwNames,
+    exportedAt:new Date().toISOString()
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='territory-tracker-map-data.json';
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function importMapDataFile(file){
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      if(!Array.isArray(data.territory)||!Array.isArray(data.dnw)) throw new Error('Invalid map data');
+      if(!confirm('Import this map data? This will replace the territory and Do Not Work boundaries on this device.')) return;
+      territory=data.territory;
+      dnw=data.dnw;
+      dnwNames=Array.isArray(data.dnwNames)?data.dnwNames:[];
+      while(dnwNames.length<dnw.length) dnwNames.push(`Do Not Work Area ${dnwNames.length+1}`);
+      dnwNames=dnwNames.slice(0,dnw.length);
+      localStorage.setItem('tt_geometry_stable',JSON.stringify({territory,dnw}));
+      localStorage.setItem('tt_dnw_names_v1',JSON.stringify(dnwNames));
+      location.reload();
+    }catch(e){alert('That file does not contain valid Territory Tracker map data.');}
+  };
+  reader.readAsText(file);
+}
+$('exportData').addEventListener('click',exportMapData);
+$('importData').addEventListener('change',e=>{
+  if(e.target.files&&e.target.files[0]) importMapDataFile(e.target.files[0]);
+  e.target.value='';
+});
+
 const map=L.map('map').setView([39.963,-79.878],14);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:20,attribution:'© OpenStreetMap contributors'}).addTo(map);
 
@@ -462,7 +526,7 @@ function closeEditor(save){
   stopRoadMode();
   clearHandles();
   editMode=false; addMode=false; addingDNW=false; activeDNWIndex=null; original=null;
-  $('editor').classList.remove('show');
+  $('editor').classList.remove('show');document.body.classList.remove('editor-open');
   $('dnwChooser').style.display='none';
   dnwLayers.forEach(layer=>{
     if(layer)layer.setStyle({color:'#b8860b',weight:2,fillColor:'#ffd54f',fillOpacity:.48});
@@ -476,7 +540,7 @@ $('editTerritory').addEventListener('click',()=>{
   stopRoadMode(); clearHandles();
   editorTarget='territory'; editMode=true; addMode=false; addingDNW=false; activeDNWIndex=null;
   original=JSON.parse(JSON.stringify({territory,dnw,dnwNames}));
-  $('editor').classList.add('show');
+  $('editor').classList.add('show');document.body.classList.add('editor-open');
   $('dnwChooser').style.display='none';
   $('editorTitle').textContent='Edit Territory';
   $('editorHelp').textContent='Edit the red territory boundary. Drag points, add points, or use Follow Road.';
@@ -505,7 +569,7 @@ function setActiveDNW(idx){
 
 $('editDNW').addEventListener('click',()=>{
   original=JSON.parse(JSON.stringify({territory,dnw}));
-  $('editor').classList.add('show');
+  $('editor').classList.add('show');document.body.classList.add('editor-open');
   if(!dnw.length){ beginAddDNW(); return; }
   activeDNWIndex = activeDNWIndex!==null && activeDNWIndex<dnw.length ? activeDNWIndex : dnw.length-1;
   setActiveDNW(activeDNWIndex);
@@ -537,7 +601,7 @@ function beginAddDNW(){
   localStorage.setItem('tt_dnw_names_v1',JSON.stringify(dnwNames));
   activeDNWIndex=idx; editorTarget='dnw'+idx;
   ensureDNWLayer(idx);
-  $('editor').classList.add('show');
+  $('editor').classList.add('show');document.body.classList.add('editor-open');
   $('dnwChooser').style.display='none';
   $('dnwAddHelp').style.display='block';
   $('finishDNW').style.display='inline-block';
