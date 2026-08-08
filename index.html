@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#007aff">
-<title>Territory Tracker</title>
+<title>Territory Tracker — Stable Test</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
@@ -42,115 +42,11 @@ textarea{width:100%;height:70px;border:1px solid #ccc;border-radius:10px;padding
   white-space:nowrap;
   text-shadow:0 1px 1px rgba(255,255,255,.7);
 }
-
-/* iPhone layout — presentation only; map/data/editing logic is unchanged */
-@media (max-width:600px){
-  html,body{width:100%;height:100%;overflow:hidden}
-  .app{height:100dvh;min-height:100dvh;position:relative}
-  .header{
-    padding:calc(env(safe-area-inset-top) + 7px) 10px 6px;
-    min-height:48px;
-  }
-  .header h1{font-size:17px;line-height:20px}
-  .header p{font-size:10px;margin:1px 0 0}
-  #map{position:absolute;inset:48px 0 0 0;height:auto;min-height:0}
-  .bottom{
-    position:absolute;
-    left:7px;right:7px;
-    bottom:calc(7px + env(safe-area-inset-bottom));
-    padding:7px;
-    border-radius:15px;
-    max-height:31dvh;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-    box-shadow:0 3px 18px #0005;
-  }
-  .actions{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:6px;
-  }
-  .actions button{
-    min-height:44px;
-    padding:8px 5px;
-    font-size:13px;
-    line-height:16px;
-    touch-action:manipulation;
-  }
-  .legend{
-    font-size:9px;
-    margin-top:5px;
-    white-space:nowrap;
-  }
-  #banner{
-    top:calc(55px + env(safe-area-inset-top));
-    left:8px;right:8px;
-    font-size:12px;
-    padding:8px;
-    z-index:20000;
-  }
-  #editor,#houseSheet{
-    left:7px;right:7px;
-    top:auto;
-    bottom:calc(7px + env(safe-area-inset-bottom));
-    max-height:82dvh;
-    padding:12px;
-    border-radius:18px;
-    z-index:30000;
-    -webkit-overflow-scrolling:touch;
-  }
-  #editor .sheetTitle,#houseSheet .sheetTitle{font-size:18px}
-  .editorBtns{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:6px;
-  }
-  .editorBtns button,.roadBtns button{
-    min-height:44px;
-    padding:9px 5px;
-    font-size:13px;
-    touch-action:manipulation;
-  }
-  .roadControls{padding:9px}
-  .roadBtns{
-    grid-template-columns:1fr;
-    gap:6px;
-  }
-  .roadBtns button{min-height:44px}
-  .statuses{
-    grid-template-columns:repeat(2,1fr);
-    gap:7px;
-  }
-  .statuses button{
-    min-height:48px;
-    font-size:13px;
-    touch-action:manipulation;
-  }
-  textarea{height:82px;font-size:16px}
-  .save{
-    min-height:46px;
-    font-size:15px;
-  }
-  select,input{
-    min-height:44px;
-    font-size:16px!important;
-  }
-  .dnw-center-label div{
-    font-size:12px;
-    padding:3px 6px;
-    max-width:180px;
-    white-space:normal;
-    text-align:center;
-  }
-  .leaflet-control-zoom a{
-    width:42px;height:42px;line-height:42px;font-size:22px;
-  }
-  .leaflet-control-attribution{font-size:8px}
-}
-
 </style>
 </head>
 <body>
 <div class="app">
-<header class="header"><h1>Territory Tracker</h1><p>Republic / Cardale</p></header>
+<header class="header"><h1>Territory Tracker</h1><p>Republic / Cardale — Stable Test</p></header>
 <div id="banner"></div><div id="map"></div>
 <div class="bottom">
 <div class="actions">

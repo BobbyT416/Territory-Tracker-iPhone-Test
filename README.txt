@@ -1,12 +1,13 @@
-iPhone Test v26
+iPhone v27 — responsive layout test.
 
-Based on the exact working Version 25 minimal-fix build.
+Based on the exact working Version 25 minimal card-label fix.
 
-This version changes ONLY the responsive presentation for narrow screens:
-- compact iPhone header
-- full-screen map behind a compact bottom control tray
-- two-column touch-friendly controls
-- larger touch targets
-- bottom-sheet editor and house panel
+This version changes only the mobile presentation:
+- fixed bottom control tray, always visible above Safari's bottom UI
+- map explicitly reserves space above the tray
+- 3-column touch-friendly controls
+- fixed iPhone header
+- touch-friendly editor/house sheets
 - iPhone safe-area handling
-- no changes to territory geometry, Do Not Work data, houses logic, Remaining, Follow Road, or Territory Card logic.
+
+No map data, Do Not Work geometry, house logic, Remaining, Follow Road, or Territory Card logic was changed.
