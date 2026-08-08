@@ -43,10 +43,77 @@ textarea{width:100%;height:70px;border:1px solid #ccc;border-radius:10px;padding
   text-shadow:0 1px 1px rgba(255,255,255,.7);
 }
 </style>
+
+<style id="iphone-layout-v28">
+@media (max-width:600px){
+  html,body{width:100%;height:100%;overflow:hidden}
+  .app{height:100dvh;min-height:100dvh;position:relative}
+  .header{
+    position:fixed!important;top:0;left:0;right:0;
+    height:58px;
+    padding:calc(env(safe-area-inset-top) + 5px) 10px 5px;
+    z-index:20000!important;
+    background:#fff;
+  }
+  .header h1{font-size:17px;line-height:20px}
+  .header p{font-size:10px;margin:1px 0 0}
+  #map{
+    position:fixed!important;
+    top:58px!important;left:0!important;right:0!important;
+    bottom:190px!important;height:auto!important;min-height:0!important;
+    z-index:1!important;
+  }
+  .bottom{
+    position:fixed!important;
+    left:0!important;right:0!important;bottom:0!important;
+    height:190px;
+    padding:6px 7px calc(6px + env(safe-area-inset-bottom));
+    box-sizing:border-box;
+    background:#fff;
+    border-top:1px solid #d1d1d6;
+    box-shadow:0 -3px 16px #0003;
+    z-index:20000!important;
+    overflow:hidden;
+  }
+  .actions{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-auto-rows:44px;
+    gap:5px;
+  }
+  .actions button{
+    min-width:0;min-height:44px;padding:4px 2px;
+    border-radius:9px;font-size:11px;line-height:13px;font-weight:700;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  }
+  .legend{font-size:8px;margin-top:4px;white-space:nowrap;overflow:hidden}
+  #banner{
+    position:fixed!important;top:62px!important;left:7px!important;right:7px!important;
+    font-size:12px;padding:7px;z-index:25000!important;
+  }
+  #editor,#houseSheet{
+    position:fixed!important;left:7px!important;right:7px!important;
+    top:auto!important;bottom:calc(7px + env(safe-area-inset-bottom))!important;
+    max-height:84dvh!important;padding:12px;border-radius:18px;
+    z-index:30000!important;overflow:auto;-webkit-overflow-scrolling:touch;
+  }
+  #editor .sheetTitle,#houseSheet .sheetTitle{font-size:18px}
+  .editorBtns{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  .editorBtns button,.roadBtns button{min-height:44px;padding:8px 4px;font-size:13px;touch-action:manipulation}
+  .roadControls{padding:8px}
+  .roadBtns{grid-template-columns:1fr;gap:6px}
+  .statuses{grid-template-columns:repeat(2,1fr);gap:7px}
+  .statuses button{min-height:48px;font-size:13px;touch-action:manipulation}
+  textarea{font-size:16px}
+  select,input{min-height:44px;font-size:16px!important}
+  .leaflet-control-zoom a{width:42px;height:42px;line-height:42px;font-size:22px}
+  .leaflet-control-attribution{font-size:8px}
+}
+</style>
 </head>
 <body>
 <div class="app">
-<header class="header"><h1>Territory Tracker</h1><p>Republic / Cardale — Stable Test</p></header>
+<header class="header"><h1>Territory Tracker</h1><p>Republic / Cardale</p></header>
 <div id="banner"></div><div id="map"></div>
 <div class="bottom">
 <div class="actions">
