@@ -51,7 +51,7 @@ textarea{width:100%;height:70px;border:1px solid #ccc;border-radius:10px;padding
   body.editor-open #editor{
     top:auto!important;
     bottom:0!important;
-    max-height:46dvh!important;
+    max-height:42dvh!important;
     z-index:40000!important;
   }
 }
@@ -242,12 +242,6 @@ function importMapDataFile(file){
   };
   reader.readAsText(file);
 }
-$('exportData').addEventListener('click',exportMapData);
-$('importData').addEventListener('change',e=>{
-  if(e.target.files&&e.target.files[0]) importMapDataFile(e.target.files[0]);
-  e.target.value='';
-});
-
 const map=L.map('map').setView([39.963,-79.878],14);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:20,attribution:'© OpenStreetMap contributors'}).addTo(map);
 
@@ -356,6 +350,13 @@ let handles=[], selectedPointIndices=[], roadPreview=null, pendingRoad=null, ori
 
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 const $=id=>document.getElementById(id);
+
+$('exportData').addEventListener('click',exportMapData);
+$('importData').addEventListener('change',e=>{
+  if(e.target.files&&e.target.files[0]) importMapDataFile(e.target.files[0]);
+  e.target.value='';
+});
+
 function banner(t){$('banner').textContent=t;$('banner').style.display=t?'block':'none'}
 function currentDNWIndex(){
   if(activeDNWIndex!==null)return activeDNWIndex;

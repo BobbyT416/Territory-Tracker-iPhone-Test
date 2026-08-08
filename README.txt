@@ -1,7 +1,8 @@
-Version 29.
+Version 30 — fixed iPhone test.
 
-Two changes only:
-1. On iPhone, when Edit Territory or Edit Do Not Work opens, the bottom navigation tray is hidden and the editor becomes a bottom sheet, leaving the upper map available for tapping/dragging.
-2. Added Export Map Data / Import Map Data. GitHub Pages is a static site, so localStorage changes made on the PC do not automatically appear on the iPhone. Export the PC map data as JSON, move that file to the iPhone (Files/iCloud Drive), then import it on the iPhone.
+Based on v29.
+Fixes the JavaScript initialization order that prevented Leaflet/map initialization.
+The Export/Import buttons now register after the DOM helper is defined.
+The phone Do Not Work editor panel is slightly smaller (42vh) so more map remains visible.
 
-No territory/Do Not Work geometry is hard-coded or replaced by this version.
+No territory, Do Not Work, house, Remaining, Follow Road, or Territory Card logic was changed.
