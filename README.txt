@@ -1,8 +1,9 @@
-Version 30 — fixed iPhone test.
+Version 31 — house interaction improvements.
 
-Based on v29.
-Fixes the JavaScript initialization order that prevented Leaflet/map initialization.
-The Export/Import buttons now register after the DOM helper is defined.
-The phone Do Not Work editor panel is slightly smaller (42vh) so more map remains visible.
+Based on working iPhone v30.
 
-No territory, Do Not Work, house, Remaining, Follow Road, or Territory Card logic was changed.
+Changes:
+- Added an explicit "Not Worked" house status; selecting it clears the current status.
+- Added Cancel to the house sheet; it closes without changing the note/status.
+- When a building is tapped, the app reverse-geocodes the building center and displays the returned address in the house panel title.
+- Existing house status colors, Remaining, map, territory editing, Do Not Work editing, Follow Road, and Territory Card logic are unchanged.

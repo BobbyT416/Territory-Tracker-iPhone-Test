@@ -197,9 +197,10 @@ textarea{width:100%;height:70px;border:1px solid #ccc;border-radius:10px;padding
 <button data-status="nothome" style="background:#fff4c7">🟡 Not Home</button>
 <button data-status="return" style="background:#dceaff">🔵 Return</button>
 <button data-status="dnc" style="background:#eee">🚫 DNC</button>
+<button data-status="" style="background:#f2f2f7">⚪ Not Worked</button>
 </div>
 <textarea id="houseNote" placeholder="Add a note..."></textarea>
-<button class="save" id="saveNote">Save</button>
+<div style="display:flex;gap:7px;margin-top:7px"><button class="save" id="saveNote" style="flex:1">Save Note</button><button class="save" id="cancelHouse" style="flex:1;background:#e5e5ea;color:#111">Cancel</button></div>
 </section>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -915,20 +916,70 @@ async function loadHouses(){
 
   L.geoJSON(gj,{
     style:f=>buildingStyle(records[String(f.properties.OBJECTID)]?.status),
-    onEachFeature:(f,l)=>l.on('click',()=>openHouse(String(f.properties.OBJECTID)))
+    onEachFeature:(f,l)=>l.on('click',()=>openHouse(String(f.properties.OBJECTID),f))
   }).addTo(houseLayer);
  }catch(e){console.warn('Building layer unavailable',e)}
 }
 
-function openHouse(id){
- houseCurrent=id;$('houseTitle').textContent='Building';$('houseNote').value=records[id]?.note||'';$('houseSheet').classList.add('show');
+let houseCurrentPoint=null;
+
+function escapeHtml(s){
+ return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 }
+
+async function reverseHouseAddress(lat,lng){
+  try{
+    const u=`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}&zoom=18&addressdetails=1`;
+    const r=await fetch(u,{headers:{'Accept':'application/json'}});
+    if(!r.ok)throw Error();
+    const d=await r.json();
+    return d?.display_name || '';
+  }catch(e){
+    return '';
+  }
+}
+
+function openHouse(id, feature){
+ houseCurrent=id;
+ houseCurrentPoint=null;
+ $('houseTitle').textContent='House';
+ $('houseNote').value=records[id]?.note||'';
+ $('houseSheet').classList.add('show');
+
+ const center=L.geoJSON(feature).getBounds().getCenter();
+ houseCurrentPoint={lat:center.lat,lng:center.lng};
+ reverseHouseAddress(center.lat,center.lng).then(addr=>{
+   if(houseCurrent!==id || !houseCurrentPoint)return;
+   if(addr){
+     $('houseTitle').textContent='🏠 '+addr;
+   }else{
+     $('houseTitle').textContent='🏠 House';
+   }
+ });
+}
+
 document.querySelectorAll('[data-status]').forEach(b=>b.addEventListener('click',()=>{
- if(!houseCurrent)return;records[houseCurrent]={...(records[houseCurrent]||{}),status:b.dataset.status};localStorage.setItem('tt_house_records_stable',JSON.stringify(records));$('houseSheet').classList.remove('show');loadHouses();
+ if(!houseCurrent)return;
+ const status=b.dataset.status;
+ const rec={...(records[houseCurrent]||{})};
+ if(status) rec.status=status;
+ else delete rec.status;
+ records[houseCurrent]=rec;
+ localStorage.setItem('tt_house_records_stable',JSON.stringify(records));
+ $('houseSheet').classList.remove('show');
+ houseCurrent=null;
+ houseCurrentPoint=null;
+ loadHouses();
 }));
 $('saveNote').addEventListener('click',()=>{
  if(!houseCurrent)return;records[houseCurrent]={...(records[houseCurrent]||{}),note:$('houseNote').value};localStorage.setItem('tt_house_records_stable',JSON.stringify(records));$('houseSheet').classList.remove('show');
 });
+$('cancelHouse').addEventListener('click',()=>{
+ houseCurrent=null;
+ houseCurrentPoint=null;
+ $('houseSheet').classList.remove('show');
+});
+
 function updateHouseButton(){
   $('houses').textContent=housesVisible?'🏠 Houses OFF':'🏠 Houses ON';
   $('houses').classList.toggle('blue',housesVisible);
